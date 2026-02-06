@@ -15,15 +15,15 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     toast({
       title: "Solicitação enviada!",
       description: "Entraremos em contato em breve com sua versão demo.",
     });
-    
+
     setIsSubmitting(false);
     (e.target as HTMLFormElement).reset();
   };
@@ -100,7 +100,7 @@ const Contact = () => {
             </div>
 
             <motion.a
-              href="https://instagram.com/racimed"
+              href="https://www.instagram.com/racimed.sistemas_11_50812079/"
               target="_blank"
               rel="noopener noreferrer"
               initial={{ opacity: 0 }}
