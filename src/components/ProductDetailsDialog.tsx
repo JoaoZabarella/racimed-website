@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -345,13 +345,6 @@ const ProductDetailsDialog = ({ open, onOpenChange, productName }: ProductDetail
             <DialogContent className="max-w-4xl max-h-[90vh] p-0 gap-0 overflow-hidden">
                 {/* Header */}
                 <div className="relative bg-gradient-primary p-8 pb-12">
-                    <button
-                        onClick={() => onOpenChange(false)}
-                        className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-                    >
-                        <X className="w-5 h-5 text-white" />
-                    </button>
-
                     <div className="text-center">
                         <img
                             src={racmedLogo}
@@ -368,7 +361,7 @@ const ProductDetailsDialog = ({ open, onOpenChange, productName }: ProductDetail
                 </div>
 
                 {/* Carousel Container */}
-                <div className="relative bg-background">
+                <div className="relative bg-background h-[550px]">
                     {/* Slide Indicators */}
                     <div className="flex justify-center gap-2 py-4 bg-muted/30">
                         {features.map((_, index) => (
@@ -383,8 +376,28 @@ const ProductDetailsDialog = ({ open, onOpenChange, productName }: ProductDetail
                         ))}
                     </div>
 
+                    {/* Fixed Navigation Buttons - At specific pixel height from top */}
+                    <div className="absolute top-[275px] left-0 right-0 flex justify-between px-2 pointer-events-none z-10">
+                        <Button
+                            onClick={prevSlide}
+                            size="icon"
+                            variant="secondary"
+                            className="pointer-events-auto rounded-full shadow-lg hover:scale-110 transition-transform"
+                        >
+                            <ChevronLeft className="w-5 h-5" />
+                        </Button>
+                        <Button
+                            onClick={nextSlide}
+                            size="icon"
+                            variant="secondary"
+                            className="pointer-events-auto rounded-full shadow-lg hover:scale-110 transition-transform"
+                        >
+                            <ChevronRight className="w-5 h-5" />
+                        </Button>
+                    </div>
+
                     {/* Slides */}
-                    <div className="relative overflow-hidden px-8 pb-8 min-h-[400px]">
+                    <div className="relative overflow-y-auto overflow-x-hidden px-8 pb-8 h-[490px]">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={currentSlide}
@@ -392,7 +405,18 @@ const ProductDetailsDialog = ({ open, onOpenChange, productName }: ProductDetail
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -50 }}
                                 transition={{ duration: 0.3 }}
-                                className="space-y-6"
+                                drag="x"
+                                dragConstraints={{ left: 0, right: 0 }}
+                                dragElastic={0.2}
+                                onDragEnd={(_, info) => {
+                                    // Swipe threshold: 50px
+                                    if (info.offset.x > 50) {
+                                        prevSlide();
+                                    } else if (info.offset.x < -50) {
+                                        nextSlide();
+                                    }
+                                }}
+                                className="space-y-6 cursor-grab active:cursor-grabbing"
                             >
                                 {/* Title */}
                                 <div>
@@ -433,26 +457,6 @@ const ProductDetailsDialog = ({ open, onOpenChange, productName }: ProductDetail
                                 </div>
                             </motion.div>
                         </AnimatePresence>
-                    </div>
-
-                    {/* Navigation Buttons */}
-                    <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-2 pointer-events-none">
-                        <Button
-                            onClick={prevSlide}
-                            size="icon"
-                            variant="secondary"
-                            className="pointer-events-auto rounded-full shadow-lg hover:scale-110 transition-transform"
-                        >
-                            <ChevronLeft className="w-5 h-5" />
-                        </Button>
-                        <Button
-                            onClick={nextSlide}
-                            size="icon"
-                            variant="secondary"
-                            className="pointer-events-auto rounded-full shadow-lg hover:scale-110 transition-transform"
-                        >
-                            <ChevronRight className="w-5 h-5" />
-                        </Button>
                     </div>
                 </div>
 
